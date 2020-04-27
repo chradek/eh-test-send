@@ -22,7 +22,10 @@ async function fillBatch(messageCount) {
 }
 
 async function sendEvents(recordRate) {
+  const batchStart = Date.now();
   const batch = await fillBatch(batchSize);
+  const batchEnd = Date.now();
+  console.log(`Time to create batch: ${((batchEnd - batchStart) / 1000).toFixed(2)} seconds`);
 
   const startTime = Date.now();
   try {
