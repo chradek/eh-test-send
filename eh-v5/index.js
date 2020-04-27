@@ -6,6 +6,8 @@ const connectionString = process.env["connection_string"];
 const batchSize = parseInt(process.env["batch_size"], 10) || 11000;
 const runTimeInMinutes = parseInt(process.env["run_time"], 10) || 10;
 
+let totalEventsSent = 0;
+
 const client = new EventHubProducerClient(connectionString);
 
 const sendEventsRate = runningAverage();
@@ -32,6 +34,7 @@ async function sendEvents(recordRate) {
     if (recordRate) {
       sendEventsRate.add(batch.count / (endTime - startTime));
     }
+    totalEventsSent += batch.count;
   } catch (err) {
     console.error(`Received an error while sending ${batch.count} events: ${err.message}`);
   }
@@ -54,6 +57,7 @@ async function run() {
   await client.close();
   clearInterval(tid);
   sendEventsRate.print();
+  console.log(`Total events sent: ${totalEventsSent}`);
   console.log(`Completed.`);
 }
 
