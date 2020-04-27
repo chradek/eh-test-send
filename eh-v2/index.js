@@ -4,6 +4,7 @@ const {runningAverage} = require("../shared/running-average");
 
 const connectionString = process.env["connection_string"];
 const batchSize = parseInt(process.env["batch_size"], 10) || 11000;
+const runTimeInMinutes = parseInt(process.env["run_time"], 10) || 10;
 
 const client = EventHubClient.createFromConnectionString(connectionString);
 
@@ -34,12 +35,12 @@ async function sendEvents(recordRate) {
 }
 
 async function run() {
-  const tenMinutes = 600000;
+  const runningTime = 60000 * runTimeInMinutes;
 
   const startTime = Date.now();
   let currentTime = startTime;
   let invocationCount = 0;
-  while ((currentTime - startTime) < tenMinutes) {
+  while ((currentTime - startTime) < runningTime) {
     await sendEvents(Boolean(invocationCount));
     invocationCount++;
     currentTime = Date.now();
