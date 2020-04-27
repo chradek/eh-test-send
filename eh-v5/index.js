@@ -46,6 +46,8 @@ async function run() {
   while ((currentTime - startTime) < runningTime) {
     await sendEvents(Boolean(invocationCount));
     invocationCount++;
+    const now = Date.now();
+    console.log(`Time for this interval: ${((now - currentTime) / 1000).toFixed(2)} seconds.`)
     currentTime = Date.now();
   }
 
